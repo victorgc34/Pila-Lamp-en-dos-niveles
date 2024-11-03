@@ -52,38 +52,85 @@ vagrant destroy
 
 ### Script de Provisionamiento: `prov_apache2.sh`
 
-## Explicación del Script de Provisión para Apache (`prov_apache2.sh`)
 
+##### Actualización e instalación de paquetes necesarios 
 ```bash
-# Actualización e Instalación de Paquetes
 sudo apt update && sudo apt upgrade -y
 sudo apt install apache2 -y
 sudo apt install php libapache2-mod-php php-mysql -y
-
-# Configuración de Apache
+```
+##### Desabilita el sitio prederminado de Apache
+```bash
 sudo a2dissite 000-default.conf
 sudo systemctl restart apache2
-
-# Clonación de la Aplicación
+```
+##### Clona el repositorio y elimina lo innecesario
+```bash
 sudo mkdir /var/www/proyecto
 sudo git clone https://github.com/josejuansanchez/iaw-practica-lamp.git /var/www/proyecto
 sudo rm -R /var/www/proyecto/db /var/www/proyecto/README.md
-
-# Configuración de la Aplicación
+```
+##### Mueve los archivos a la carpeta a hostear
+```bash
 sudo cp /var/www/proyecto/src/* /var/www/proyecto/ && rm -R /var/www/proyecto/src/
-sudo tee /var/www/proyecto/config.php > /dev/null <<EOF
-# Configuración de la conexión a la base de datos en `config.php`
+```
+##### Parametros indispensables
+Estos dos deben de ser identicos con los de prov_mysql
+```bash
+DB_USER=vgarciac
+DB_PASS=C3r8L2E9kcUe
+```
+Parametro que hace referencia a la dirección IP de mysql
+```bash
+IP_MS=192.168.1.3
+```
 
-# Permisos y Propietario
+##### Configuración del archivo "config.php" 
+Este archivo se utiliza para que la conexión que la base de datos sea posible.
+```bash
+sudo tee /var/www/proyecto/config.php > /dev/null <<EOF
+<?php
+
+define('DB_HOST', '$IP_MS');
+define('DB_NAME', 'lamp_db');
+define('DB_USER', '$DB_USER');
+define('DB_PASSWORD', '$DB_PASS');
+
+\$mysqli = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+
+?>
+EOF
+
+```
+
+##### Modificacion del permisos y del propietario 
+Con esto añadimos los permisos 755 a todos los archivos dentro de "proyectos" y le cambiamos el usuario a "www-data" para que apache pueda acceder a ellos.
+```bash
 sudo chmod -R 755 /var/www/proyecto
 sudo chown -R www-data:www-data /var/www/proyecto/
-
-# Configuración de Apache para el Proyecto
+```
+##### Configuración del sitio de apache
+Esta comando lo que hace es añadir el archivo de configuración de sitio y indicarle que la ruta de donde tiene los recursos a hostear es "/var/www/proyecto".
+```bash
 sudo tee /etc/apache2/sites-available/proyecto.conf > /dev/null <<EOF
+<VirtualHost *:80>
+    #ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/proyecto
+    ErrorLog \${APACHE_LOG_DIR}/error.log
+    CustomLog \${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+EOF
+```
+
+##### Habilita el sitio de apache 
+```bash
 sudo a2ensite proyecto.conf
 sudo systemctl reload apache2
+```
 
-# Configuración del Firewall
+##### Configuración del Firewall para mayor seguridad
+```bash
 ufw allow ssh
 ufw allow apache
 echo "y" | sudo ufw enable
+``
