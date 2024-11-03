@@ -53,28 +53,28 @@ vagrant destroy
 ### Script de Provisionamiento: `prov_apache2.sh`
 
 
-##### Actualización e instalación de paquetes necesarios 
+#### Actualización e instalación de paquetes necesarios 
 ```bash
 sudo apt update && sudo apt upgrade -y
 sudo apt install apache2 -y
 sudo apt install php libapache2-mod-php php-mysql -y
 ```
-##### Desabilita el sitio prederminado de Apache
+#### Desabilita el sitio prederminado de Apache
 ```bash
 sudo a2dissite 000-default.conf
 sudo systemctl restart apache2
 ```
-##### Clona el repositorio y elimina lo innecesario
+#### Clona el repositorio y elimina lo innecesario
 ```bash
 sudo mkdir /var/www/proyecto
 sudo git clone https://github.com/josejuansanchez/iaw-practica-lamp.git /var/www/proyecto
 sudo rm -R /var/www/proyecto/db /var/www/proyecto/README.md
 ```
-##### Mueve los archivos a la carpeta a hostear
+#### Mueve los archivos a la carpeta a hostear
 ```bash
 sudo cp /var/www/proyecto/src/* /var/www/proyecto/ && rm -R /var/www/proyecto/src/
 ```
-##### Parametros indispensables
+#### Parametros indispensables
 Estos dos deben de ser identicos con los de prov_mysql
 ```bash
 DB_USER=vgarciac
@@ -85,7 +85,7 @@ Parametro que hace referencia a la dirección IP de mysql
 IP_MS=192.168.1.3
 ```
 
-##### Configuración del archivo "config.php" 
+#### Configuración del archivo "config.php" 
 Este archivo se utiliza para que la conexión que la base de datos sea posible.
 ```bash
 sudo tee /var/www/proyecto/config.php > /dev/null <<EOF
@@ -103,13 +103,13 @@ EOF
 
 ```
 
-##### Modificacion del permisos y del propietario 
+#### Modificacion del permisos y del propietario 
 Con esto añadimos los permisos 755 a todos los archivos dentro de "proyectos" y le cambiamos el usuario a "www-data" para que apache pueda acceder a ellos.
 ```bash
 sudo chmod -R 755 /var/www/proyecto
 sudo chown -R www-data:www-data /var/www/proyecto/
 ```
-##### Configuración del sitio de apache
+#### Configuración del sitio de apache
 Esta comando lo que hace es añadir el archivo de configuración de sitio y indicarle que la ruta de donde tiene los recursos a hostear es "/var/www/proyecto".
 ```bash
 sudo tee /etc/apache2/sites-available/proyecto.conf > /dev/null <<EOF
@@ -122,7 +122,7 @@ sudo tee /etc/apache2/sites-available/proyecto.conf > /dev/null <<EOF
 EOF
 ```
 
-##### Habilita el sitio de apache 
+#### Habilita el sitio de apache 
 ```bash
 sudo a2ensite proyecto.conf
 sudo systemctl reload apache2
