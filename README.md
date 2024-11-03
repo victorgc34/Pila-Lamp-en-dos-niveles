@@ -202,3 +202,7 @@ Esto impide la conexión a internet
 ```bash
 sudo ufw default deny outgoing
 ```
+### Capturas de pantalla
+Esta demuestran que tanto la maqina apache como mysql estan procesando las peticiones.
+![Captura desde 2024-11-03 23-53-10](https://github.com/user-attachments/assets/c42e2c54-db0f-44d6-b108-f9b34fd6d41f)
+![Captura desde 2024-11-03 23-58-36](https://github.com/user-attachments/assets/a2e009df-6799-4dad-8abf-8fa31f1c5c12)
