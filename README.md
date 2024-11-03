@@ -133,4 +133,4 @@ sudo systemctl reload apache2
 ufw allow ssh
 ufw allow apache
 echo "y" | sudo ufw enable
-``
+```
