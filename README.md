@@ -1,40 +1,41 @@
-# Pila-Lamp-en-dos-niveles
-royecto Vagrant con Apache y MySQL
 
 Este proyecto configura un entorno de desarrollo con dos máquinas virtuales (VM) utilizando Vagrant. Una VM sirve como servidor Apache para hospedar aplicaciones web en PHP, mientras que la otra es un servidor MySQL para gestionar la base de datos. Este entorno se configura y se provisiona automáticamente mediante scripts de shell.
-Requisitos previos
 
-    Vagrant
-    VirtualBox
+## Requisitos previos
 
-Estructura del proyecto
+- [Vagrant](https://www.vagrantup.com/downloads)
+- [VirtualBox](https://www.virtualbox.org/)
 
-    Vagrantfile: Configura las dos máquinas virtuales y sus redes.
-    prov_apache2.sh: Provisiona la máquina Apache (instala y configura Apache, PHP, y una aplicación PHP).
-    prov_mysql.sh: Provisiona la máquina MySQL (instala MySQL y configura una base de datos para la aplicación).
+## Estructura del proyecto
 
-Configuración de las Máquinas Virtuales
+- **Vagrantfile**: Configura las dos máquinas virtuales y sus redes.
+- **prov_apache2.sh**: Provisiona la máquina Apache (instala y configura Apache, PHP, y una aplicación PHP).
+- **prov_mysql.sh**: Provisiona la máquina MySQL (instala MySQL y configura una base de datos para la aplicación).
 
-El Vagrantfile define dos máquinas:
+## Configuración de las Máquinas Virtuales
 
-    Apache VM
-        Nombre de host: VictorGarcApache
-        Red pública y privada (IP privada: 192.168.1.2)
-        Puerto de Apache (80) mapeado al host (8080)
-        Provisión mediante prov_apache2.sh
-    MySQL VM
-        Nombre de host: VictorGarciaMysql
-        Red pública y privada (IP privada: 192.168.1.3)
-        Provisión mediante prov_mysql.sh
+El `Vagrantfile` define dos máquinas:
 
-Provisionamiento
-Script de Provisionamiento: prov_apache2.sh
+- **Apache VM**
+  - Nombre de host: `VictorGarcApache`
+  - Red pública y privada (IP privada: `192.168.1.2`)
+  - Puerto de Apache (80) mapeado al host (8080)
+  - Provisión mediante `prov_apache2.sh`
+  
+- **MySQL VM**
+  - Nombre de host: `VictorGarciaMysql`
+  - Red pública y privada (IP privada: `192.168.1.3`)
+  - Provisión mediante `prov_mysql.sh`
+
+## Provisionamiento
+
+### Script de Provisionamiento: `prov_apache2.sh`
 
 Este script instala y configura Apache y PHP en la máquina, y clona el proyecto de GitHub. Luego, configura el archivo de configuración de la aplicación PHP para conectar a la base de datos MySQL.
-Comandos explicados:
 
-bash
+#### Comandos explicados:
 
+```bash
 sudo apt update && sudo apt upgrade -y
 
 Actualiza la lista de paquetes e instala las actualizaciones pendientes del sistema.
@@ -177,12 +178,3 @@ echo "y" | sudo ufw enable
 sudo ufw default deny outgoing
 
 Configura el firewall para permitir SSH y MySQL, y deniega el tráfico saliente por defecto.
-Uso del Proyecto
-
-    Clonar el repositorio en tu máquina.
-    Ejecutar vagrant up para iniciar y provisionar las VM.
-    Acceder a la aplicación web en http://localhost:8080.
-
-Créditos
-
-Este proyecto fue desarrollado basándose en el repositorio de josejuansanchez/iaw-practica-lamp.
