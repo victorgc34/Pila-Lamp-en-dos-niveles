@@ -30,8 +30,6 @@ El `Vagrantfile` define dos máquinas:
 
 ## Gestión de las Máquinas Virtuales
 
-## Gestión de las Máquinas Virtuales
-
 #### Arrancar las máquinas
 ```bash
 vagrant up
@@ -45,7 +43,7 @@ vagrant halt
 ```
 #### Destruir las máquinas
 ```bash
-vagrant destroy -f
+vagrant destroy
 # Elimina las máquinas virtuales y todos sus datos.
 
 ```
