@@ -136,7 +136,69 @@ sudo systemctl reload apache2
 
 #### Configuración del Firewall para mayor seguridad:
 ```bash
+
 ufw allow ssh
 ufw allow apache
 echo "y" | sudo ufw enable
+```
+### Script de Provisionamiento: `prov_mysql.sh`
+
+#### Actualización de paquetes y instalacion de MySQL:
+```bash
+sudo apt update
+sudo apt upgrade -y
+sudo apt install mysql-server -y
+```
+#### Clonación del repositorio:
+```bash
+sudo git clone https://github.com/josejuansanchez/iaw-practica-lamp.git $HOME/iaw-practica-lamp
+```
+####  Importación de script a mysql:
+En este, se crea la estructura de la base de datos a utilizar.
+```bash
+sudo mysql -u root < $HOME/iaw-practica-lamp/db/database.sql
+```
+
+#### Parametros para la base de datos:
+Los dos primeros deben coincidir con los del "pro_apache2.sh"
+```bash
+DB_USER=vgarciac
+DB_PASS=C3r8L2E9kcUe
+#
+IP_MA=192.168.1.2
+db_passwd=1234-Admin
+```
+#### Añadir una contraseña al usuario root de la base de datos:
+```bash
+sudo mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY '$db_passwd';"
+```
+#### Creación de un nuevo usuario de MySQL y asignación de privilegios:
+```bash
+sudo mysql -u root -p$db_passwd -e "CREATE USER '$DB_USER'@'$IP_MA' IDENTIFIED BY '$DB_PASS';"
+sudo mysql -u root -p$db_passwd -e "GRANT ALL PRIVILEGES ON lamp_db.* TO '$DB_USER'@'$IP_MA';FLUSH PRIVILEGES;"
+```
+#### Modificar configuración para que MySQL permita conexiones externas:
+```bash
+sudo sed -i 's/^bind-address.*/bind-address = 0.0.0.0/' /etc/mysql/mysql.conf.d/mysqld.cnf
+sudo systemctl restart mysql
+```
+#### Resolución de problemas:
+Para que la base de datos no tarde en responder al quitarle la conexion a internet.
+Medida aplicada ya que al impedir la conexión a internet, la base de datos intenta resolver algunos nombres de dominio, lo que causa un retraso importante en la resolucion de peticiones
+
+```bash
+sudo echo "skip-name-resolve" >> /etc/mysql/mysql.conf.d/mysqld.cnf
+systemctl restart mysql
+```
+#### Configuración del firewall UFW para SSH y MySQL:
+```bash
+sudo ufw allow ssh
+sudo ufw allow mysql
+sudo echo "y" | sudo ufw enable
+```
+
+#### Desabilitar todas las conexiones:
+Esto impide la conexión a internet
+```bash
+sudo ufw default deny outgoing
 ```
