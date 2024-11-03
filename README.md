@@ -28,6 +28,25 @@ El `Vagrantfile` define dos máquinas:
   - Red pública y privada (IP privada: `192.168.1.3`)
   - Provisión mediante `prov_mysql.sh`
 
+## Gestión de las Máquinas Virtuales
+
+## Gestión de las Máquinas Virtuales
+
+```bash
+# Arrancar las máquinas
+vagrant up
+# Inicia y configura las máquinas virtuales.
+
+# Detener las máquinas
+vagrant halt
+# Apaga las máquinas sin destruirlas.
+
+# Destruir las máquinas
+vagrant destroy -f
+# Elimina las máquinas virtuales y todos sus datos.
+
+```
+
 ## Provisionamiento
 
 ### Script de Provisionamiento: `prov_apache2.sh`
