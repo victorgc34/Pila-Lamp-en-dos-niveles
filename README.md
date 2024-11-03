@@ -52,5 +52,38 @@ vagrant destroy
 
 ### Script de Provisionamiento: `prov_apache2.sh`
 
-Este script instala y configura Apache y PHP en la máquina, y clona el proyecto de GitHub. Luego, configura el archivo de configuración de la aplicación PHP para conectar a la base de datos MySQL.
+## Explicación del Script de Provisión para Apache (`prov_apache2.sh`)
 
+```bash
+# Actualización e Instalación de Paquetes
+sudo apt update && sudo apt upgrade -y
+sudo apt install apache2 -y
+sudo apt install php libapache2-mod-php php-mysql -y
+
+# Configuración de Apache
+sudo a2dissite 000-default.conf
+sudo systemctl restart apache2
+
+# Clonación de la Aplicación
+sudo mkdir /var/www/proyecto
+sudo git clone https://github.com/josejuansanchez/iaw-practica-lamp.git /var/www/proyecto
+sudo rm -R /var/www/proyecto/db /var/www/proyecto/README.md
+
+# Configuración de la Aplicación
+sudo cp /var/www/proyecto/src/* /var/www/proyecto/ && rm -R /var/www/proyecto/src/
+sudo tee /var/www/proyecto/config.php > /dev/null <<EOF
+# Configuración de la conexión a la base de datos en `config.php`
+
+# Permisos y Propietario
+sudo chmod -R 755 /var/www/proyecto
+sudo chown -R www-data:www-data /var/www/proyecto/
+
+# Configuración de Apache para el Proyecto
+sudo tee /etc/apache2/sites-available/proyecto.conf > /dev/null <<EOF
+sudo a2ensite proyecto.conf
+sudo systemctl reload apache2
+
+# Configuración del Firewall
+ufw allow ssh
+ufw allow apache
+echo "y" | sudo ufw enable
