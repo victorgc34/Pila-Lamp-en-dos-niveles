@@ -134,7 +134,7 @@ sudo a2ensite proyecto.conf
 sudo systemctl reload apache2
 ```
 
-##### Configuración del Firewall para mayor seguridad:
+#### Configuración del Firewall para mayor seguridad:
 ```bash
 ufw allow ssh
 ufw allow apache
